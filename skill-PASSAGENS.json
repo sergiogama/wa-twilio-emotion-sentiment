@@ -1,0 +1,502 @@
+{
+  "intents": [
+    {
+      "intent": "Alterar_voo",
+      "examples": [
+        {
+          "text": "Alterar o meu voo para Salvador"
+        },
+        {
+          "text": "É possível alterar o meu voo?"
+        },
+        {
+          "text": "Gostaria de alterar minha passagem"
+        },
+        {
+          "text": "Por favor, preciso alterar meu voo"
+        },
+        {
+          "text": "preciso trocar minha passagem urgente"
+        },
+        {
+          "text": "quero alterar o meu voo para Sergipe"
+        },
+        {
+          "text": "quero mudar meu voo"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "intent": "Cancelar_voo",
+      "examples": [
+        {
+          "text": "Cancelar meu voo por favor"
+        },
+        {
+          "text": "esse serviço não presta. quero meu dinheiro de volta!"
+        },
+        {
+          "text": "Gostaria de cancelar minha viagem"
+        },
+        {
+          "text": "poderia cancelar meu voo para Natal?"
+        },
+        {
+          "text": "por favor, poderia cancelar meu voo?"
+        },
+        {
+          "text": "Preciso cancelar a minha viagem"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "intent": "Checkin",
+      "examples": [
+        {
+          "text": "Gentileza fazer o meu checkin"
+        },
+        {
+          "text": "Me ajuda com o meu checkin?"
+        },
+        {
+          "text": "Poderia fazer o meu checkin?"
+        },
+        {
+          "text": "Quero fazer o checkin"
+        },
+        {
+          "text": "Quero proceder com o checkin"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "intent": "Comprar_passagem",
+      "examples": [
+        {
+          "text": "Gostaria de saber se tem passagem para São Paulo"
+        },
+        {
+          "text": "por favor, tem bilhete aéreo para o Rio de Janeiro"
+        },
+        {
+          "text": "preciso de uma passagem urgente"
+        },
+        {
+          "text": "Quero uma passagem"
+        },
+        {
+          "text": "Vocês têm passagem área?"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "intent": "Falar_com_humano",
+      "examples": [
+        {
+          "text": "é possível falar com um humano?"
+        },
+        {
+          "text": "Gostaria de falar com uma pessoa, pode ser?"
+        },
+        {
+          "text": "por favor, me transfira para um humano"
+        },
+        {
+          "text": "Quero falar com uma pessoa"
+        },
+        {
+          "text": "Quero falar com um humano"
+        }
+      ],
+      "description": ""
+    }
+  ],
+  "entities": [],
+  "metadata": {
+    "api_version": {
+      "major_version": "v2",
+      "minor_version": "2018-11-08"
+    }
+  },
+  "webhooks": [
+    {
+      "url": "https://gama-node-red-demo.mybluemix.net/watson/api",
+      "name": "main_webhook",
+      "headers": []
+    }
+  ],
+  "dialog_nodes": [
+    {
+      "type": "standard",
+      "title": "Bem-vindo",
+      "output": {
+        "generic": [
+          {
+            "values": [
+              {
+                "text": "Obrigado por utilizar a Corujet, como podemos ajudar você hoje?"
+              }
+            ],
+            "response_type": "text",
+            "selection_policy": "sequential"
+          }
+        ]
+      },
+      "conditions": "welcome",
+      "dialog_node": "Bem-vindo"
+    },
+    {
+      "type": "standard",
+      "title": "Em outros casos",
+      "actions": [
+        {
+          "name": "main_webhook",
+          "type": "webhook",
+          "parameters": {
+            "acao": "Emocao",
+            "mensagem": "<? input.text ?>"
+          },
+          "result_variable": "resultado"
+        }
+      ],
+      "metadata": {
+        "_customization": {
+          "mcr": true
+        }
+      },
+      "conditions": "anything_else",
+      "dialog_node": "Em outros casos",
+      "previous_sibling": "node_6_1614293319896",
+      "disambiguation_opt_out": true
+    },
+    {
+      "type": "standard",
+      "title": "Analisar comentário",
+      "parent": "node_2_1614295775578",
+      "actions": [
+        {
+          "name": "main_webhook",
+          "type": "webhook",
+          "parameters": {
+            "acao": "Emocao",
+            "mensagem": "<? input.text ?>"
+          },
+          "result_variable": "resultado"
+        }
+      ],
+      "metadata": {
+        "_customization": {
+          "mcr": true
+        }
+      },
+      "conditions": "true",
+      "dialog_node": "node_10_1614295827198"
+    },
+    {
+      "type": "standard",
+      "title": "Mudar voô",
+      "output": {
+        "generic": [
+          {
+            "values": [
+              {
+                "text": "Infelizmente a alteração de vôos é possível apenas através do nosso telefone 0300-123-456"
+              }
+            ],
+            "response_type": "text",
+            "selection_policy": "sequential"
+          }
+        ]
+      },
+      "conditions": "#Alterar_voo",
+      "dialog_node": "node_2_1614295236645",
+      "previous_sibling": "node_9_1614295473094"
+    },
+    {
+      "type": "standard",
+      "title": "Falar com atendente",
+      "output": {
+        "generic": [
+          {
+            "values": [
+              {
+                "text": "Antes de conectar com nossos atendentes, por favor descreva seu caso."
+              }
+            ],
+            "response_type": "text",
+            "selection_policy": "sequential"
+          }
+        ]
+      },
+      "conditions": "#Falar_com_humano",
+      "dialog_node": "node_2_1614295775578",
+      "previous_sibling": "Bem-vindo"
+    },
+    {
+      "type": "standard",
+      "title": "Verificar o destino",
+      "output": {
+        "generic": [
+          {
+            "values": [
+              {
+                "text": "Não encontrei o destino ($resultado.Destino) que você informou. Como posso te ajudar? <? context.clear() ?>"
+              }
+            ],
+            "response_type": "text",
+            "selection_policy": "sequential"
+          }
+        ]
+      },
+      "parent": "node_6_1614293319896",
+      "conditions": "$resultado && $resultado.Destino",
+      "dialog_node": "node_3_1614293762720"
+    },
+    {
+      "type": "standard",
+      "title": "Verifica ticket",
+      "output": {
+        "generic": [
+          {
+            "values": [
+              {
+                "text": "O ticket informado (<? input.text ?>) não foi encontrado. Se você comprou sua passagem com \"Owl points\", ligue 0300-987-645"
+              }
+            ],
+            "response_type": "text",
+            "selection_policy": "sequential"
+          }
+        ]
+      },
+      "parent": "node_9_1614295473094",
+      "conditions": "true",
+      "dialog_node": "node_4_1614295521367"
+    },
+    {
+      "type": "standard",
+      "title": "Comprar passagem",
+      "actions": [
+        {
+          "name": "main_webhook",
+          "type": "webhook",
+          "parameters": {
+            "acao": "Destino",
+            "mensagem": "<? input.text ?>"
+          },
+          "result_variable": "resultado"
+        }
+      ],
+      "metadata": {
+        "_customization": {
+          "mcr": true
+        }
+      },
+      "next_step": {
+        "behavior": "jump_to",
+        "selector": "condition",
+        "dialog_node": "node_3_1614293762720"
+      },
+      "conditions": "#Comprar_passagem",
+      "dialog_node": "node_6_1614293319896",
+      "previous_sibling": "node_2_1614295236645"
+    },
+    {
+      "type": "standard",
+      "output": {
+        "generic": [
+          {
+            "values": [
+              {
+                "text": "Qual seu destino?"
+              }
+            ],
+            "response_type": "text",
+            "selection_policy": "sequential"
+          }
+        ]
+      },
+      "parent": "node_6_1614293319896",
+      "conditions": "true",
+      "dialog_node": "node_6_1614294787396",
+      "previous_sibling": "node_3_1614293762720"
+    },
+    {
+      "type": "standard",
+      "output": {
+        "generic": [
+          {
+            "values": [
+              {
+                "text": "Não encontrei o destino (<? input.text ?>) que você informou. Como posso te ajudar? <? context.clear() ?>"
+              }
+            ],
+            "response_type": "text",
+            "selection_policy": "sequential"
+          }
+        ]
+      },
+      "parent": "node_6_1614294787396",
+      "conditions": "true",
+      "dialog_node": "node_6_1614294851532"
+    },
+    {
+      "type": "standard",
+      "title": "Fazer checkin",
+      "output": {
+        "generic": [
+          {
+            "values": [
+              {
+                "text": "Qual o número do seu ticket?"
+              }
+            ],
+            "response_type": "text",
+            "selection_policy": "sequential"
+          }
+        ]
+      },
+      "conditions": "#Checkin",
+      "dialog_node": "node_8_1614295630990",
+      "previous_sibling": "node_2_1614295775578"
+    },
+    {
+      "type": "standard",
+      "title": "Verifica ticket",
+      "output": {
+        "generic": [
+          {
+            "values": [
+              {
+                "text": "O checkin para seu ticket (<? input.text ?>) está disponível apenas nos caixas de atendimento no aeroporto"
+              }
+            ],
+            "response_type": "text",
+            "selection_policy": "sequential"
+          }
+        ]
+      },
+      "parent": "node_8_1614295630990",
+      "conditions": "true",
+      "dialog_node": "node_8_1614295658495"
+    },
+    {
+      "type": "standard",
+      "title": "Cancelar voô",
+      "output": {
+        "generic": [
+          {
+            "values": [
+              {
+                "text": "Qual o número do seu ticket?"
+              }
+            ],
+            "response_type": "text",
+            "selection_policy": "sequential"
+          }
+        ]
+      },
+      "conditions": "#Cancelar_voo",
+      "dialog_node": "node_9_1614295473094",
+      "previous_sibling": "node_8_1614295630990"
+    },
+    {
+      "type": "response_condition",
+      "output": {
+        "text": {
+          "values": [
+            "Erro"
+          ],
+          "selection_policy": "sequential"
+        }
+      },
+      "parent": "Em outros casos",
+      "conditions": "anything_else",
+      "dialog_node": "response_1_1614347347899",
+      "previous_sibling": "response_6_1614347347617"
+    },
+    {
+      "type": "response_condition",
+      "output": {
+        "generic": [
+          {
+            "values": [
+              {
+                "text": "<? ($resultado.watson.humano) ? \"Não entendi o que você deseja solicitar, mas estamos conectando você por telefone com um dos nossos atendentes e ele ajudará no seu caso.\" : \"Não entendi o que você solicitou. Poderia reformular sua pergunta novamente por favor? Se deseja falar com um atendente, informe: Falar com atendente\" ?>"
+              }
+            ],
+            "response_type": "text",
+            "selection_policy": "sequential"
+          }
+        ]
+      },
+      "parent": "Em outros casos",
+      "context": {},
+      "conditions": "$resultado",
+      "dialog_node": "response_6_1614347347617"
+    },
+    {
+      "type": "response_condition",
+      "output": {
+        "generic": [
+          {
+            "values": [
+              {
+                "text": "<? ($resultado.watson.humano) ? \"Entendido. Estamos conectando você por telefone com um dos nossos atendentes e ele ajudará no seu caso.\" : \"Todos os nossos atendentes estão ocupados. Se você deseja realizar alguma operação no seu ticket, acesse voecoruja.com.\" ?>"
+              }
+            ],
+            "response_type": "text",
+            "selection_policy": "sequential"
+          }
+        ]
+      },
+      "parent": "node_10_1614295827198",
+      "context": {},
+      "conditions": "$resultado",
+      "dialog_node": "response_9_1614295872602"
+    },
+    {
+      "type": "response_condition",
+      "output": {
+        "text": {
+          "values": [
+            "Erro"
+          ],
+          "selection_policy": "sequential"
+        }
+      },
+      "parent": "node_10_1614295827198",
+      "conditions": "anything_else",
+      "dialog_node": "response_9_1614295873948",
+      "previous_sibling": "response_9_1614295872602"
+    }
+  ],
+  "counterexamples": [
+    {
+      "text": "esse serviço não presta. quero meu dinheiro de volta!"
+    }
+  ],
+  "system_settings": {
+    "disambiguation": {
+      "prompt": "Você quis dizer:",
+      "enabled": false,
+      "randomize": true,
+      "max_suggestions": 5,
+      "suggestion_text_policy": "title",
+      "none_of_the_above_prompt": "Nenhuma das anteriores"
+    },
+    "system_entities": {
+      "enabled": true
+    },
+    "human_agent_assist": {
+      "prompt": "Você quis dizer:"
+    }
+  },
+  "learning_opt_out": false,
+  "name": "PASSAGENS",
+  "language": "pt-br",
+  "description": ""
+}
